@@ -40,6 +40,7 @@ library(jsonlite)  # converts JSON files to R objects
 library(glue)      # concatenate strings
 library(stringi)   # character string/text processing
 library(httr)      #GET() function
+library(knitr)
 
 # 2 COLLECT movie information ----
 url  <- "https://www.boxofficemojo.com/chart/top_lifetime_gross/?area=XWW"
@@ -87,7 +88,7 @@ mutate(url = glue("https://www.boxofficemojo.com/{link}")) %>%
   
   select(rank,title, release_year, lifetime_gross,url)
 
-
+kable(box_office_mojo_database, caption = "Box Office Mojo Top Lifetime Grosses")
 ```
 
 
