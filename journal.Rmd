@@ -20,19 +20,76 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 
 This is an `.Rmd` file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a \# in front of your text, it will create a top level-header.
 
-# My first post
+# Box Office API
 
 Last compiled: `r Sys.Date()`
 
-Notice that whatever you define as a top level header, automatically gets put into the table of contents bar on the left. 
+Box Office Mojo is a website similar to IMDB that provides the list and information about movies, their rating, release date and lifetime gross for the top 200 movies.
 
-## Second level header
+```{r}
+cat("\014")
 
-You can add more headers by adding more hashtags. These won't be put into the table of contents
+# WEBSCRAPING ----
 
-### third level header
+# 1.0 LIBRARIES ----
 
-Here's an even lower level header
+library(tidyverse) # Main Package - Loads dplyr, purrr, etc.
+library(rvest)     # HTML Hacking & Web Scraping
+library(xopen)     # Quickly opening URLs
+library(jsonlite)  # converts JSON files to R objects
+library(glue)      # concatenate strings
+library(stringi)   # character string/text processing
+library(httr)      #GET() function
+
+# 2 COLLECT movie information ----
+url  <- "https://www.boxofficemojo.com/chart/top_lifetime_gross/?area=XWW"
+
+# Read in the HTML for the entire webpage
+html <- url %>% 
+        read_html()
+
+# Web scrape the ids for the families
+
+rank <- html %>% 
+        html_nodes(".a-text-right.mojo-header-column.mojo-truncate.mojo-field-type-rank") %>% 
+        html_text() %>% 
+        # Make all values numeric
+        as.numeric()
+
+
+title <-html %>% 
+        html_nodes(".mojo-field-type-title > a") %>% 
+        html_text() 
+
+
+link <- html %>%
+        html_nodes(".mojo-field-type-title > a") %>% 
+        html_attr("href")
+
+
+release_year <- html %>%
+                html_nodes(css = ".a-text-left.mojo-field-type-year") %>%
+                html_text() %>%
+                enframe(name = "index", value = "release_year") %>%
+                slice(2:201)
+
+
+lifetime_gross <-  html %>%
+                   html_nodes(css = ".a-text-right.mojo-field-type-money") %>%
+                   html_text() %>%
+                   enframe(name = "position", value = "lifetime_gross") %>%
+                   slice(2:201)
+
+#3 Joining data
+box_office_mojo_database <- tibble(title,rank,link,release_year,lifetime_gross) %>%
+
+mutate(url = glue("https://www.boxofficemojo.com/{link}")) %>%
+  
+  select(rank,title, release_year, lifetime_gross,url)
+
+
+```
+
 
 # My second post (note the order)
 
