@@ -113,7 +113,8 @@ separate(col = location,
                                      prefix = "", 
                                      suffix = " €"))
 
-
+```
+```{r plot, fig.width=10, fig.height=7}
 # Step 2 - Visualize
 
 sales_by_location_tbl %>%
@@ -230,6 +231,9 @@ sales_by_year_location_tbl <- bike_orderlines_wrangled_tbl %>%
                                      decimal.mark = ",", 
                                      prefix = "", 
                                      suffix = " €"))
+
+```
+```{r plot2, fig.width=15, fig.height=10}
 
 # Step 2 - Visualize
 
@@ -685,6 +689,9 @@ covid_data_2020_cumulative_cases <- covid_data_tbl %>%
                                    prefix = "", 
                                    suffix = ""))
 
+```
+```{r plot3, fig.width=10, fig.height=7}
+
 ## PLOTTING
 # Canvas
 covid_data_2020_cumulative_cases  %>%
@@ -767,6 +774,9 @@ world <- map_data("world")
 
 covid_world_mortality_rate <- left_join(x = world, y = covid_mortality_rate, by=c("region" = "country")) 
 
+
+```
+```{r plot4, fig.width=10, fig.height=7}
 ggplot(covid_world_mortality_rate, aes(x=long, y=lat, group = group, fill = (mortality_rate))) + 
   geom_polygon(colour = "white") +
   scale_fill_continuous(low = "dodgerblue",
